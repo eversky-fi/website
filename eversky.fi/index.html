@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EverSky</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#070a12;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --border:rgba(31,41,55,.9);
+      --accent:#7c3aed;
+      --accent2:#22c55e;
+      --shadow:0 24px 80px rgba(0,0,0,.55);
+      --shadow2:0 14px 40px rgba(0,0,0,.35);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 18% -10%,rgba(124,58,237,.30),transparent 60%),
+        radial-gradient(900px 560px at 85% -5%,rgba(34,197,94,.16),transparent 60%),
+        radial-gradient(700px 520px at 50% 40%,rgba(245,158,11,.08),transparent 60%),
+        linear-gradient(180deg,#070a12 0%, #070a12 45%, #060915 100%);
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1120px;margin:0 auto;padding:22px 20px 70px}
+
+    /* Topbar */
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      background: linear-gradient(180deg, rgba(7,10,18,.82) 0%, rgba(7,10,18,.55) 100%);
+      border-bottom:1px solid rgba(31,41,55,.55);
+    }
+    .topbar-inner{
+      max-width:1120px;margin:0 auto;padding:14px 20px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+    .logo{
+      width:30px;height:30px;border-radius:12px;
+      background:linear-gradient(135deg,#7c3aed,#22c55e);
+      box-shadow:0 18px 50px rgba(124,58,237,.22);
+    }
+    .nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+    .nav a{
+      font-weight:700;font-size:13px;opacity:.75;
+    }
+    .nav a:hover{opacity:1}
+    .btn{
+      height:42px;padding:0 14px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      font-weight:800;font-size:13px;
+      border:1px solid rgba(31,41,55,1);
+      background:rgba(11,15,24,.35);
+      box-shadow:0 10px 26px rgba(0,0,0,.22);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{
+      background:linear-gradient(135deg,#7c3aed,#6d28d9);
+      border-color:rgba(124,58,237,.6);
+      box-shadow:0 18px 52px rgba(124,58,237,.18);
+    }
+    .btn-secondary{
+      border-color:rgba(34,197,94,.45);
+      background:linear-gradient(135deg, rgba(34,197,94,.18), rgba(11,15,24,.35));
+    }
+    .mobile-hide{display:flex}
+    @media (max-width:820px){ .mobile-hide{display:none} }
+
+    /* Hero */
+    .hero{position:relative;padding:50px 0 18px}
+    .hero-grid{
+      display:grid;grid-template-columns:1.25fr .75fr;
+      gap:22px;align-items:stretch;
+    }
+    @media(max-width:980px){ .hero-grid{grid-template-columns:1fr} }
+    .kicker{
+      display:inline-flex;gap:10px;align-items:center;
+      font-size:12px;font-weight:800;letter-spacing:.18em;
+      text-transform:uppercase;color:rgba(229,231,235,.75);
+      padding:10px 12px;border-radius:999px;
+      border:1px solid rgba(31,41,55,.75);
+      background:rgba(11,15,24,.32);
+    }
+    .kicker .dot{
+      width:9px;height:9px;border-radius:999px;
+      background:#7c3aed;
+      box-shadow:0 0 0 7px rgba(124,58,237,.16);
+    }
+    .h1{margin:18px 0 12px;font-size:56px;line-height:1.05;letter-spacing:-.04em}
+    @media(max-width:980px){ .h1{font-size:44px} }
+    .sub{margin:0 0 18px;color:var(--muted);font-size:16px;line-height:1.75;max-width:70ch}
+    .pills{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 14px}
+    .pill{
+      padding:9px 12px;border-radius:999px;
+      border:1px solid rgba(31,41,55,.8);
+      background:rgba(11,15,24,.28);
+      font-size:12px;font-weight:800;
+      display:inline-flex;gap:8px;align-items:center;
+      color:rgba(229,231,235,.88);
+    }
+    .pill span{
+      width:8px;height:8px;border-radius:999px;
+      background:#22c55e;
+      box-shadow:0 0 0 6px rgba(34,197,94,.14);
+    }
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+    .hero-spacer{height:18px}
+
+    /* Right panel */
+    .glass{
+      position:relative;
+      border-radius:var(--r);
+      border:1px solid rgba(31,41,55,.85);
+      background:linear-gradient(180deg,rgba(17,24,39,.60),rgba(11,18,36,.48));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .glass:before{
+      content:"";
+      position:absolute;inset:-2px;
+      background:
+        radial-gradient(520px 260px at 25% 0%,rgba(124,58,237,.18),transparent 60%),
+        radial-gradient(520px 260px at 85% 10%,rgba(34,197,94,.10),transparent 60%);
+      pointer-events:none;
+    }
+    .glass > *{position:relative}
+    .panel-title{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:14px 14px 10px;border-bottom:1px solid rgba(31,41,55,.55);
+    }
+    .panel-title .label{
+      font-size:12px;font-weight:900;letter-spacing:.18em;
+      text-transform:uppercase;color:rgba(229,231,235,.72);
+    }
+    .live{
+      font-size:12px;font-weight:900;
+      padding:7px 10px;border-radius:999px;
+      border:1px solid rgba(31,41,55,.75);
+      background:rgba(11,15,24,.35);
+      display:inline-flex;gap:8px;align-items:center;
+    }
+    .live:hover{transform:translateY(-1px)}
+    .live i{
+      width:8px;height:8px;border-radius:999px;
+      background:#22c55e;
+      box-shadow:0 0 0 7px rgba(34,197,94,.14);
+      display:inline-block;
+    }
+    .metric-grid{
+      display:grid;grid-template-columns:1fr 1fr;
+      gap:12px;padding:14px;
+    }
+    .metric{
+      border:1px solid rgba(31,41,55,.75);
+      background:rgba(11,15,24,.25);
+      border-radius:16px;padding:12px;
+      box-shadow:var(--shadow2);
+    }
+    .metric .k{font-size:12px;font-weight:800;color:var(--muted)}
+    .metric .v{font-size:18px;font-weight:900;margin-top:6px;letter-spacing:-.02em}
+    .metric .s{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.55}
+    .quote{
+      margin:12px 14px 16px;
+      padding:14px;border-radius:16px;
+      border:1px solid rgba(124,58,237,.28);
+      background:rgba(11,15,24,.26);
+    }
+    .quote .big{margin:0;font-weight:900;font-size:16px;line-height:1.45}
+    .quote .small{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.6}
+
+    /* Sections */
+    .section{margin:54px 0}
+    .section-head{
+      display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    h2{margin:0;font-size:22px;letter-spacing:-.02em}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media(max-width:980px){ .grid-3{grid-template-columns:1fr} }
+    .card{
+      border-radius:16px;
+      border:1px solid rgba(31,41,55,.85);
+      background:linear-gradient(180deg, rgba(17,24,39,.54), rgba(11,18,36,.42));
+      box-shadow:var(--shadow2);
+      overflow:hidden;
+    }
+    .card-pad{padding:16px}
+    .icon{
+      width:40px;height:40px;border-radius:14px;
+      display:grid;place-items:center;
+      border:1px solid rgba(31,41,55,.85);
+      background:rgba(11,15,24,.25);
+      margin-bottom:12px;
+      font-weight:900;
+    }
+    .card h3{margin:0 0 6px;font-size:15px;letter-spacing:-.01em}
+    .card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.65}
+
+    /* Timeline (How it works) */
+    .timeline{display:grid;gap:10px}
+    .step{
+      display:grid;grid-template-columns:42px 1fr;gap:12px;
+      padding:14px;border-radius:16px;
+      border:1px solid rgba(31,41,55,.85);
+      background:rgba(11,15,24,.22);
+    }
+    .bubble{
+      width:42px;height:42px;border-radius:16px;
+      display:grid;place-items:center;
+      font-weight:900;
+      border:1px solid rgba(31,41,55,.85);
+      background:rgba(11,15,24,.28);
+    }
+    .step .t{font-weight:900;margin:1px 0 6px}
+    .step .d{margin:0;color:var(--muted);font-size:13.5px;line-height:1.65}
+
+    /* FAQ */
+    .faq{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:980px){ .faq{grid-template-columns:1fr} }
+    details{
+      border:1px solid rgba(31,41,55,.85);
+      border-radius:16px;
+      background:rgba(11,15,24,.22);
+      padding:12px 14px;
+    }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      font-weight:900;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    summary::-webkit-details-marker{display:none}
+    summary .chev{
+      width:28px;height:28px;border-radius:12px;
+      display:grid;place-items:center;
+      border:1px solid rgba(31,41,55,.85);
+      background:rgba(11,15,24,.28);
+      color:rgba(229,231,235,.75);
+      font-weight:900;
+    }
+    details[open] summary .chev{transform:rotate(180deg)}
+    details p{margin:10px 0 0;color:var(--muted);font-size:13.5px;line-height:1.65}
+
+    /* Footer */
+    .footer{
+      margin-top:54px;
+      border-top:1px solid rgba(31,41,55,.65);
+      padding-top:22px;
+      color:var(--muted);
+      font-size:13px;
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    }
+    .footer a:hover{color:rgba(229,231,235,.95)}
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">EverSky</div>
+
+      <div class="nav">
+        <a class="mobile-hide" href="#concept">Concept</a>
+        <a class="mobile-hide"
+   href="https://referral.eversky.fi/"
+   target="_blank"
+   rel="noopener noreferrer">
+  Referral
+</a>
+
+        <a class="mobile-hide" href="#faq">FAQ</a>
+
+        <a class="btn btn-secondary mobile-hide"
+           href="https://bscscan.com/"
+           target="_blank"
+           rel="noopener noreferrer">Explorer</a>
+
+        <a class="btn btn-primary"
+           href="https://app.eversky.fi/"
+           target="_blank"
+           rel="noopener noreferrer">Open App</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-grid">
+
+        <!-- LEFT -->
+        <div>
+          
+
+          <div class="h1">Asymmetric Upside.<br>Structurally Limited Downside.</div>
+
+          <p class="sub">
+            Financial markets are not linear. People buy. People sell. Liquidity moves in both directions.
+            EverSky is built for exactly that reality — and designed to preserve value while market activity continues.
+          </p>
+
+          <div class="pills">
+            <div class="pill"><span></span>No panic loops</div>
+            <div class="pill"><span></span>No market timing</div>
+            <div class="pill"><span></span>Stable by design</div>
+          </div>
+
+          <div class="cta">
+            <a class="btn btn-primary" href="https://app.eversky.fi/" target="_blank" rel="noopener noreferrer">Open App</a>
+            <a class="btn"
+   href="https://referral.eversky.fi/"
+   target="_blank"
+   rel="noopener noreferrer">
+  Referral program
+</a>
+
+          </div>
+
+          <div class="hero-spacer"></div>
+        </div>
+
+        <!-- RIGHT -->
+        <aside class="glass" aria-label="EverSky highlights panel">
+          <div class="panel-title">
+            <div class="label">System highlights</div>
+            <a class="live"
+               href="https://bscscan.com/"
+               target="_blank"
+               rel="noopener noreferrer"
+               title="View on BNB Chain Explorer">
+              <i></i>Live on BNB Chain
+            </a>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric">
+              <div class="k">Price behavior</div>
+              <div class="v">No downward movement</div>
+              <div class="s">Selling activity is processed without creating downside risk for holders.</div>
+            </div>
+            <div class="metric">
+              <div class="k">Risk profile</div>
+              <div class="v">Asymmetric</div>
+              <div class="s">Downside is structurally limited while upside remains open.</div>
+            </div>
+            <div class="metric">
+              <div class="k">Market correlation</div>
+              <div class="v">Uncorrelated</div>
+              <div class="s">Independent of broader market moves.</div>
+            </div>
+            <div class="metric">
+              <div class="k">System stability</div>
+              <div class="v">Stable by design</div>
+              <div class="s">Stability is built into the system architecture.</div>
+            </div>
+          </div>
+
+          <div class="quote">
+            <p class="big">EverSky. The price doesn’t go down.</p>
+            <p class="small">A system designed to preserve value under real market behavior.</p>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- CONCEPT -->
+    <section id="concept" class="section">
+      <div class="section-head">
+        <h2>Concept</h2>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-pad">
+            <div class="icon">🧩</div>
+            <h3>Selling is part of the architecture</h3>
+            <p>
+              EverSky treats selling as normal market behavior — not as a threat. Exit liquidity is expected,
+              and the system is designed to remain stable when participants sell.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-pad">
+            <div class="icon">🛡️</div>
+            <h3>Structural downside limitation</h3>
+            <p>
+              In conventional token models, selling pressure translates into downward price movement.
+              EverSky follows a different approach: selling does not push the price down.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-pad">
+            <div class="icon">📈</div>
+            <h3>Upside remains open</h3>
+            <p>
+              This creates an asymmetric risk-to-reward profile: limited downside, open upside —
+              without relying on constant new buyers or forced holding behavior.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="section">
+      <div class="section-head">
+        <h2>How it works</h2>
+      </div>
+
+      <div class="timeline">
+        <div class="step">
+          <div class="bubble">1</div>
+          <div>
+            <div class="t">Market activity happens</div>
+            <p class="d">Participants buy and sell as needed. Liquidity moves naturally.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="bubble">2</div>
+          <div>
+            <div class="t">Sells are processed without downside</div>
+            <p class="d">Those who need liquidity can exit without creating downward price pressure for holders.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="bubble">3</div>
+          <div>
+            <div class="t">Value is preserved while the system runs</div>
+            <p class="d">No panic during sell-offs, no need to time the market — the system continues functioning under real usage.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="bubble">4</div>
+          <div>
+            <div class="t">Growth comes from usage</div>
+            <p class="d">Integrated referral mechanisms support reach and activity. Participation strengthens the ecosystem.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <div class="section-head">
+        <h2>FAQ</h2>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>
+            Why doesn’t selling push the price down?
+            <span class="chev">⌄</span>
+          </summary>
+          <p>
+            EverSky is designed so that selling activity is expected and processed without creating downside risk for holders.
+            The system does not rely on “everyone holding” dynamics.
+          </p>
+        </details>
+
+        <details>
+          <summary>
+            Does EverSky depend on constant new buyers?
+            <span class="chev">⌄</span>
+          </summary>
+          <p>
+            No. EverSky continues to function while buying and selling take place. It is not built on the assumption of continuous inflows.
+          </p>
+        </details>
+
+        <details>
+          <summary>
+            What is the benefit for holders?
+            <span class="chev">⌄</span>
+          </summary>
+          <p>
+            The outcome is an asymmetric profile: downside is structurally limited while upside remains open, with reduced timing pressure.
+          </p>
+        </details>
+
+        <details>
+          <summary>
+            How does growth happen?
+            <span class="chev">⌄</span>
+          </summary>
+          <p>
+            Growth comes from real usage and integrated referral mechanisms that drive reach and activity, without forcing market behavior.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div>© EverSky 2026</div>
+      <div>
+        <a href="#home">Top</a> ·
+        <a href="#concept">Concept</a> ·
+        <a href="https://referral.eversky.fi/"
+   target="_blank"
+   rel="noopener noreferrer">
+  Referral
+</a>
+
+        <a href="https://app.eversky.fi/" target="_blank" rel="noopener noreferrer">App</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
