@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#070a12;
+  --card:rgba(17,24,39,.65);
+  --border:rgba(31,41,55,.85);
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+
+  --accent:#7c3aed;
+  --good:#22c55e;
+  --warn:#f59e0b;
+  --bad:#ef4444;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 15% -10%, rgba(124,58,237,.25), transparent 60%),
+    radial-gradient(700px 500px at 85% -5%, rgba(34,197,94,.18), transparent 60%),
+    linear-gradient(180deg,#070a12 0%, #060915 100%);
+}
+.container{max-width:920px;margin:32px auto;padding:0 16px}
+
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.brand{font-weight:800;font-size:20px}
+.right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.badge{padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:rgba(11,15,24,.35);color:var(--muted)}
+.badge.good{color:var(--good);border-color:rgba(34,197,94,.45)}
+.badge.warn{color:var(--warn);border-color:rgba(245,158,11,.55)}
+.badge.bad{color:var(--bad);border-color:rgba(239,68,68,.55)}
+
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:rgba(11,15,24,.35);cursor:pointer;font-weight:700}
+.tab.active{background:var(--accent);color:#fff;border-color:rgba(124,58,237,.6)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.h1{font-size:28px;font-weight:800}
+.h2{font-size:16px;font-weight:800;margin-bottom:8px}
+
+.assets{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:720px){.assets{grid-template-columns:1fr}}
+.asset{border:1px solid var(--border);border-radius:12px;padding:14px;background:rgba(11,15,24,.25)}
+.asset .name{font-weight:800}
+.asset .bal{font-size:22px;font-weight:900;margin-top:6px}
+
+.label{font-size:13px;color:var(--muted);margin-top:12px}
+.input{position:relative;margin-top:6px}
+.input input{
+  width:100%;
+  padding:14px 80px 14px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-size:16px;
+  background:rgba(11,15,24,.25);
+  color:var(--text);
+}
+.input input[readonly]{background:rgba(11,15,24,.18)}
+.input .right{
+  position:absolute;right:8px;top:8px;
+  padding:6px 10px;border-radius:8px;
+  border:1px solid var(--border);
+  background:rgba(11,15,24,.35);
+  cursor:pointer;
+  font-weight:800;font-size:12px;
+  color:var(--text);
+}
+
+.inline{margin-top:8px;font-size:12px;display:none;color:var(--bad)}
+
+.actions{display:flex;gap:10px;margin-top:16px}
+button{
+  padding:12px 14px;border-radius:10px;border:1px solid var(--border);
+  background:rgba(11,15,24,.35);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:900
+}
+button.primary{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-color:rgba(124,58,237,.6)}
+button:disabled{opacity:.5;cursor:not-allowed}
+
+.status{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px dashed rgba(31,41,55,.75);
+  background:rgba(11,15,24,.25);
+  font-size:12px;
+  display:none;
+  color:var(--text);
+}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="brand">Account</div>
+    <div class="right">
+      <span id="netBadge" class="badge">Not connected</span>
+      <button id="btnSwitch" style="display:none">Switch network</button>
+      <button id="btnConnect" class="primary">Connect</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div id="tOverview" class="tab active">Overview</div>
+    <div id="tDeposit" class="tab">Deposit</div>
+    <div id="tWithdraw" class="tab">Withdraw</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="overview">
+    <div class="card">
+      <div class="h2">Account Value</div>
+      <div class="h1"><span id="accountValue">0</span> USDT</div>
+      <div class="label">Token Price <span id="tokenPrice">–</span></div>
+    </div>
+
+    <div class="card">
+      <div class="h2">Assets</div>
+      <div class="assets">
+        <div class="asset">
+          <div class="name">USDT</div>
+          <div class="bal"><span id="usdtBal">0</span></div>
+        </div>
+        <div class="asset">
+          <div class="name">EVER</div>
+          <div class="bal"><span id="everBal">0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPOSIT -->
+  <div id="deposit" style="display:none">
+    <div class="card">
+      <div class="h2">Deposit</div>
+
+      <div class="label">Amount (USDT)</div>
+      <div class="input">
+        <input id="depAmount" placeholder="0.00" inputmode="decimal"/>
+        <div class="right" id="depMax">MAX</div>
+      </div>
+      <div id="depErr" class="inline"></div>
+
+      <div class="label">You receive</div>
+      <div class="input">
+        <input id="depOut" readonly/>
+      </div>
+
+      <div class="label">Referral</div>
+      <div class="input">
+        <input id="depRef" placeholder="0x..." inputmode="text"/>
+      </div>
+
+      <div class="actions">
+        <button id="depAuthorize">Authorize</button>
+        <button id="depDo" class="primary">Deposit</button>
+      </div>
+
+      <div id="depStatus" class="status"></div>
+    </div>
+  </div>
+
+  <!-- WITHDRAW -->
+  <div id="withdraw" style="display:none">
+    <div class="card">
+      <div class="h2">Withdraw</div>
+
+      <div class="label">Amount (EVER)</div>
+      <div class="input">
+        <input id="wdAmount" placeholder="0.00" inputmode="decimal"/>
+        <div class="right" id="wdMax">MAX</div>
+      </div>
+      <div id="wdErr" class="inline"></div>
+
+      <div class="label">You receive</div>
+      <div class="input">
+        <input id="wdOut" readonly/>
+      </div>
+
+      <div class="actions">
+        <button id="wdAuthorize">Authorize</button>
+        <button id="wdDo" class="primary">Withdraw</button>
+      </div>
+
+      <div id="wdStatus" class="status"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+/**
+ * Dynamic ethers import (like the working EverSky code):
+ * - If blocked by CSP/Adblock, we show an error in the badge.
+ */
+let ethers;
+try {
+  ({ ethers } = await import("https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.min.js"));
+} catch (e) {
+  const b = document.querySelector("#netBadge");
+  b.className = "badge bad";
+  b.textContent = "Ethers import blocked (CSP/Adblock/CDN)";
+  console.error("Ethers import failed:", e);
+  throw e;
+}
+
+/* ================= CONFIG ================= */
+const TREASURY_ADDR = "0xC02635Dd8d757eeECEbAeD91caB1b53F0922637D";
+const TARGET_CHAIN_ID = 97n;
+const DEFAULT_REFERRER = "0xF876f7fCC35D9BB9663B4638aC1433A09Ecea1c8";
+/* ========================================= */
+
+const TREASURY_ABI = [
+  "function reserve() view returns (address)",
+  "function token() view returns (address)",
+  "function tokenPrice() view returns (uint256)",
+  "function mint(uint256 amount,address ref)",
+  "function redeemNAV(uint256 tokensIn)"
+];
+
+const ERC20_ABI = [
+  "function balanceOf(address) view returns (uint256)",
+  "function approve(address,uint256) returns (bool)",
+  "function allowance(address,address) view returns (uint256)",
+  "function decimals() view returns (uint8)"
+];
+
+const $ = (s) => document.querySelector(s);
+const fmt = (n, max = 6) => Number(n).toLocaleString(undefined, { maximumFractionDigits: max });
+const isAddr = (s) => /^0x[a-fA-F0-9]{40}$/.test((s || "").trim());
+
+function show(tab){
+  ["overview","deposit","withdraw"].forEach(v => ($("#"+v).style.display = "none"));
+  $("#"+tab).style.display = "block";
+  ["tOverview","tDeposit","tWithdraw"].forEach(t => $("#"+t).classList.remove("active"));
+  $("#t"+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add("active");
+}
+$("#tOverview").onclick = () => show("overview");
+$("#tDeposit").onclick = () => show("deposit");
+$("#tWithdraw").onclick = () => show("withdraw");
+
+let provider, signer, user, chainId = 0n;
+let treasury, usdt, ever;
+let usdtDec = 6, everDec = 18;
+let usdtBalNum = 0, everBalNum = 0, priceNum = 0;
+let usdtAllow = 0n, everAllow = 0n;
+
+let connecting = false;
+let eventsBound = false;
+
+function getReadableError(e){
+  if (e?.code === 4001) return "User rejected in MetaMask.";
+  if (e?.code === -32002) return "MetaMask request pending. Open MetaMask and finish it.";
+  return e?.shortMessage || e?.reason || e?.message || String(e);
+}
+
+function setBadge(extra = ""){
+  const b = $("#netBadge");
+
+  if (!window.ethereum){
+    b.className = "badge bad";
+    b.textContent = "No wallet detected";
+    $("#btnSwitch").style.display = "none";
+    $("#btnConnect").disabled = true;
+    $("#btnConnect").textContent = "Connect";
+    return;
+  }
+
+  if (!user){
+    b.className = "badge";
+    b.textContent = extra || (connecting ? "Connecting..." : "Not connected");
+    $("#btnSwitch").style.display = "none";
+    $("#btnConnect").disabled = false;
+    $("#btnConnect").textContent = connecting ? "Connecting..." : "Connect";
+    return;
+  }
+
+  if (chainId === TARGET_CHAIN_ID){
+    b.className = "badge good";
+    b.textContent = `Connected (Chain ${chainId})`;
+    $("#btnSwitch").style.display = "none";
+  } else {
+    b.className = "badge warn";
+    b.textContent = `Wrong network (Chain ${chainId})`;
+    $("#btnSwitch").style.display = "inline-block";
+  }
+
+  $("#btnConnect").disabled = false;
+  $("#btnConnect").textContent = connecting ? "Connecting..." : "Connected";
+}
+
+function parseNum(v){
+  const n = parseFloat((v || "").replace(",", "."));
+  return isFinite(n) ? n : 0;
+}
+
+function setInline(el, msg){
+  el.style.display = msg ? "block" : "none";
+  el.textContent = msg || "";
+}
+
+function setStatus(box, text){
+  box.style.display = "block";
+  box.innerHTML = text;
+}
+
+function chosenReferral(){
+  const v = ($("#depRef").value || "").trim();
+  if (!isAddr(v)) return DEFAULT_REFERRER;
+  if (user && v.toLowerCase() === user.toLowerCase()) return DEFAULT_REFERRER;
+  return v;
+}
+
+function updateOutputs(){
+  const dep = parseNum($("#depAmount").value);
+  const wd  = parseNum($("#wdAmount").value);
+
+  $("#depOut").value = (priceNum > 0 && dep > 0) ? fmt(dep / priceNum, 8) : "";
+  $("#wdOut").value  = (priceNum > 0 && wd  > 0) ? fmt(wd * priceNum, 8) : "";
+
+  const accountValue = usdtBalNum + everBalNum * priceNum;
+  $("#accountValue").textContent = fmt(accountValue, 6);
+  $("#tokenPrice").textContent = priceNum ? fmt(priceNum, 8) : "–";
+}
+
+function updateValidationAndButtons(){
+  const dep = parseNum($("#depAmount").value);
+  const wd  = parseNum($("#wdAmount").value);
+
+  const depErr =
+    !user ? "Connect wallet" :
+    chainId !== TARGET_CHAIN_ID ? "Wrong network" :
+    dep > usdtBalNum ? "Amount exceeds balance" : "";
+
+  const wdErr =
+    !user ? "Connect wallet" :
+    chainId !== TARGET_CHAIN_ID ? "Wrong network" :
+    wd > everBalNum ? "Amount exceeds balance" : "";
+
+  setInline($("#depErr"), dep > 0 ? depErr : "");
+  setInline($("#wdErr"), wd > 0 ? wdErr : "");
+
+  const depNeedAuth =
+    !user || chainId !== TARGET_CHAIN_ID || dep <= 0
+      ? true
+      : usdtAllow < ethers.parseUnits(String(dep), usdtDec);
+
+  const wdNeedAuth =
+    !user || chainId !== TARGET_CHAIN_ID || wd <= 0
+      ? true
+      : everAllow < ethers.parseUnits(String(wd), everDec);
+
+  $("#depAuthorize").style.display = depNeedAuth ? "inline-block" : "none";
+  $("#wdAuthorize").style.display  = wdNeedAuth ? "inline-block" : "none";
+
+  $("#depAuthorize").disabled = !(user && chainId === TARGET_CHAIN_ID && dep > 0);
+  $("#wdAuthorize").disabled  = !(user && chainId === TARGET_CHAIN_ID && wd  > 0);
+
+  $("#depDo").disabled = !(user && chainId === TARGET_CHAIN_ID && dep > 0 && dep <= usdtBalNum);
+  $("#wdDo").disabled  = !(user && chainId === TARGET_CHAIN_ID && wd  > 0 && wd  <= everBalNum);
+}
+
+async function initContracts(){
+  treasury = new ethers.Contract(TREASURY_ADDR, TREASURY_ABI, signer);
+
+  const [usdtAddr, everAddr] = await Promise.all([treasury.reserve(), treasury.token()]);
+  usdt = new ethers.Contract(usdtAddr, ERC20_ABI, signer);
+  ever = new ethers.Contract(everAddr, ERC20_ABI, signer);
+
+  try { usdtDec = await usdt.decimals(); } catch {}
+  try { everDec = await ever.decimals(); } catch {}
+}
+
+async function refresh(){
+  if (!user || !treasury || !usdt || !ever) return;
+
+  const [bU, bE, p, aU, aE] = await Promise.all([
+    usdt.balanceOf(user),
+    ever.balanceOf(user),
+    treasury.tokenPrice(),
+    usdt.allowance(user, TREASURY_ADDR),
+    ever.allowance(user, TREASURY_ADDR),
+  ]);
+
+  usdtBalNum = Number(ethers.formatUnits(bU, usdtDec));
+  everBalNum = Number(ethers.formatUnits(bE, everDec));
+  priceNum = Number(ethers.formatUnits(p, 18));
+
+  usdtAllow = aU;
+  everAllow = aE;
+
+  $("#usdtBal").textContent = fmt(usdtBalNum, 6);
+  $("#everBal").textContent = fmt(everBalNum, 6);
+
+  updateOutputs();
+  updateValidationAndButtons();
+}
+
+async function syncNetworkAndUser(){
+  const net = await provider.getNetwork();
+  chainId = net.chainId;
+  signer = await provider.getSigner();
+  user = await signer.getAddress();
+}
+
+function bindWalletEventsOnce(){
+  if (eventsBound) return;
+  if (!window.ethereum?.on) return;
+
+  eventsBound = true;
+
+  window.ethereum.on("chainChanged", async () => {
+    try{
+      provider = new ethers.BrowserProvider(window.ethereum);
+      await syncNetworkAndUser();
+      await initContracts();
+      await refresh();
+    } catch (e){
+      user = undefined;
+      chainId = 0n;
+    }
+    setBadge();
+    updateValidationAndButtons();
+  });
+
+  window.ethereum.on("accountsChanged", async (accounts) => {
+    if (!accounts || !accounts.length){
+      user = undefined;
+      chainId = 0n;
+      setBadge();
+      updateValidationAndButtons();
+      return;
+    }
+    try{
+      provider = new ethers.BrowserProvider(window.ethereum);
+      await syncNetworkAndUser();
+      await initContracts();
+      await refresh();
+    } catch {
+      user = undefined;
+      chainId = 0n;
+    }
+    setBadge();
+    updateValidationAndButtons();
+  });
+}
+
+async function connect({ silent = false } = {}){
+  if (!window.ethereum){
+    setBadge();
+    return;
+  }
+  if (connecting) return;
+
+  connecting = true;
+  setBadge();
+
+  try{
+    provider = new ethers.BrowserProvider(window.ethereum);
+
+    if (!silent){
+      await provider.send("eth_requestAccounts", []);
+    } else {
+      const acc = await window.ethereum.request({ method: "eth_accounts" });
+      if (!acc || !acc.length) {
+        connecting = false;
+        setBadge();
+        return;
+      }
+    }
+
+    await syncNetworkAndUser();
+    await initContracts();
+    await refresh();
+    bindWalletEventsOnce();
+  } catch (e){
+    user = undefined;
+    chainId = 0n;
+    setBadge(getReadableError(e));
+  } finally {
+    connecting = false;
+    setBadge();
+    updateValidationAndButtons();
+  }
+}
+
+$("#btnConnect").onclick = () => connect({ silent: false });
+
+$("#btnSwitch").onclick = async () => {
+  if (!window.ethereum) return;
+  const hex = "0x" + Number(TARGET_CHAIN_ID).toString(16);
+  try{
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: hex }],
+    });
+  } catch (e){
+    setBadge(getReadableError(e));
+  }
+};
+
+$("#depAmount").oninput = () => { updateOutputs(); updateValidationAndButtons(); };
+$("#wdAmount").oninput  = () => { updateOutputs(); updateValidationAndButtons(); };
+
+$("#depMax").onclick = () => {
+  $("#depAmount").value = String(usdtBalNum || "");
+  updateOutputs();
+  updateValidationAndButtons();
+};
+
+$("#wdMax").onclick = () => {
+  $("#wdAmount").value = String(everBalNum || "");
+  updateOutputs();
+  updateValidationAndButtons();
+};
+
+$("#depAuthorize").onclick = async () => {
+  const amt = parseNum($("#depAmount").value);
+  if (!(user && chainId === TARGET_CHAIN_ID && amt > 0)) return;
+
+  const box = $("#depStatus");
+  try{
+    setStatus(box, "Authorizing...");
+    const tx = await usdt.approve(TREASURY_ADDR, ethers.parseUnits(String(amt), usdtDec));
+    setStatus(box, `Submitted: <span class="mono">${tx.hash}</span>`);
+    await tx.wait();
+    setStatus(box, `Confirmed: <span class="mono">${tx.hash}</span>`);
+    await refresh();
+  } catch (e){
+    setStatus(box, `Failed: ${getReadableError(e)}`);
+  }
+};
+
+$("#depDo").onclick = async () => {
+  const amt = parseNum($("#depAmount").value);
+  if (!(user && chainId === TARGET_CHAIN_ID && amt > 0)) return;
+
+  const box = $("#depStatus");
+  try{
+    setStatus(box, "Depositing...");
+    const ref = chosenReferral();
+    const tx = await treasury.mint(ethers.parseUnits(String(amt), usdtDec), ref);
+    setStatus(box, `Submitted: <span class="mono">${tx.hash}</span>`);
+    await tx.wait();
+    setStatus(box, `Confirmed: <span class="mono">${tx.hash}</span>`);
+    await refresh();
+  } catch (e){
+    setStatus(box, `Failed: ${getReadableError(e)}`);
+  }
+};
+
+$("#wdAuthorize").onclick = async () => {
+  const amt = parseNum($("#wdAmount").value);
+  if (!(user && chainId === TARGET_CHAIN_ID && amt > 0)) return;
+
+  const box = $("#wdStatus");
+  try{
+    setStatus(box, "Authorizing...");
+    const tx = await ever.approve(TREASURY_ADDR, ethers.parseUnits(String(amt), everDec));
+    setStatus(box, `Submitted: <span class="mono">${tx.hash}</span>`);
+    await tx.wait();
+    setStatus(box, `Confirmed: <span class="mono">${tx.hash}</span>`);
+    await refresh();
+  } catch (e){
+    setStatus(box, `Failed: ${getReadableError(e)}`);
+  }
+};
+
+$("#wdDo").onclick = async () => {
+  const amt = parseNum($("#wdAmount").value);
+  if (!(user && chainId === TARGET_CHAIN_ID && amt > 0)) return;
+
+  const box = $("#wdStatus");
+  try{
+    setStatus(box, "Withdrawing...");
+    const tx = await treasury.redeemNAV(ethers.parseUnits(String(amt), everDec));
+    setStatus(box, `Submitted: <span class="mono">${tx.hash}</span>`);
+    await tx.wait();
+    setStatus(box, `Confirmed: <span class="mono">${tx.hash}</span>`);
+    await refresh();
+  } catch (e){
+    setStatus(box, `Failed: ${getReadableError(e)}`);
+  }
+};
+
+function initUI(){
+  setBadge();
+  show("overview");
+  updateOutputs();
+  updateValidationAndButtons();
+}
+
+async function tryAutoConnect(){
+  if (!window.ethereum) return;
+  try{
+    const acc = await window.ethereum.request({ method: "eth_accounts" });
+    if (acc && acc.length){
+      await connect({ silent: true });
+    }
+  } catch {}
+}
+
+initUI();
+await tryAutoConnect();
+</script>
+</body>
+</html>
