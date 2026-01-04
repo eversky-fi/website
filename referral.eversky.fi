@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EverSky – Referral</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#070a12;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --border:rgba(31,41,55,.85);
+      --accent:#7c3aed;
+      --accent2:#22c55e;
+      --shadow:0 24px 80px rgba(0,0,0,.55);
+      --shadow2:0 14px 40px rgba(0,0,0,.35);
+      --r:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 18% -10%,rgba(124,58,237,.30),transparent 60%),
+        radial-gradient(900px 560px at 85% -5%,rgba(34,197,94,.16),transparent 60%),
+        radial-gradient(700px 520px at 50% 40%,rgba(245,158,11,.08),transparent 60%),
+        linear-gradient(180deg,#070a12 0%, #070a12 45%, #060915 100%);
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1120px;margin:0 auto;padding:22px 20px 70px}
+
+    /* Topbar */
+    .topbar{
+      position:sticky;top:0;z-index:20;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      background: linear-gradient(180deg, rgba(7,10,18,.82) 0%, rgba(7,10,18,.55) 100%);
+      border-bottom:1px solid rgba(31,41,55,.55);
+    }
+    .topbar-inner{
+      max-width:1120px;margin:0 auto;padding:14px 20px;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+    .logo{
+      width:30px;height:30px;border-radius:12px;
+      background:linear-gradient(135deg,#7c3aed,#22c55e);
+      box-shadow:0 18px 50px rgba(124,58,237,.22);
+    }
+    .nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .btn{
+      height:42px;padding:0 14px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      font-weight:800;font-size:13px;
+      border:1px solid rgba(31,41,55,1);
+      background:rgba(11,15,24,.35);
+      box-shadow:0 10px 26px rgba(0,0,0,.22);
+      transition:transform .15s ease, opacity .15s ease;
+      cursor:pointer;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{
+      background:linear-gradient(135deg,#7c3aed,#6d28d9);
+      border-color:rgba(124,58,237,.6);
+      box-shadow:0 18px 52px rgba(124,58,237,.18);
+    }
+    .btn-secondary{
+      border-color:rgba(34,197,94,.45);
+      background:linear-gradient(135deg, rgba(34,197,94,.18), rgba(11,15,24,.35));
+    }
+
+    /* Hero */
+    .hero{padding:50px 0 10px}
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      align-items:stretch;
+    }
+    .kicker{
+      display:inline-flex;gap:10px;align-items:center;
+      font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+      color:rgba(229,231,235,.75);
+      padding:10px 12px;border-radius:999px;
+      border:1px solid rgba(31,41,55,.75);
+      background:rgba(11,15,24,.32);
+    }
+    .kicker .dot{
+      width:9px;height:9px;border-radius:999px;
+      background:var(--accent);
+      box-shadow:0 0 0 7px rgba(124,58,237,.16);
+    }
+    .h1{margin:18px 0 12px;font-size:54px;line-height:1.05;letter-spacing:-.04em}
+    @media(max-width:980px){ .h1{font-size:42px} }
+    .sub{margin:0 0 18px;color:var(--muted);font-size:16px;line-height:1.75;max-width:75ch}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+    .pill-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:9px 12px;border-radius:999px;
+      border:1px solid rgba(31,41,55,.8);
+      background:rgba(11,15,24,.28);
+      font-size:12px;font-weight:800;
+      color:rgba(229,231,235,.88);
+    }
+    .pill span{
+      width:8px;height:8px;border-radius:999px;
+      background:var(--accent2);
+      box-shadow:0 0 0 6px rgba(34,197,94,.14);
+    }
+
+    /* Two-column section */
+    .panels{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:16px;
+      align-items:start;
+      margin-top:16px;
+    }
+    @media(max-width:980px){ .panels{grid-template-columns:1fr} }
+
+    /* Glass */
+    .glass{
+      position:relative;
+      border-radius:var(--r);
+      border:1px solid rgba(31,41,55,.85);
+      background:linear-gradient(180deg,rgba(17,24,39,.60),rgba(11,18,36,.48));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .glass:before{
+      content:"";
+      position:absolute;inset:-2px;
+      background:
+        radial-gradient(520px 260px at 25% 0%,rgba(124,58,237,.18),transparent 60%),
+        radial-gradient(520px 260px at 85% 10%,rgba(34,197,94,.10),transparent 60%);
+      pointer-events:none;
+    }
+    .glass > *{position:relative}
+    .panel-title{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:14px 14px 10px;border-bottom:1px solid rgba(31,41,55,.55);
+    }
+    .panel-title .label{
+      font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;
+      color:rgba(229,231,235,.72);
+    }
+
+    /* Rewards */
+    .levels{padding:14px}
+    .level-row{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:12px 12px;border-radius:14px;
+      border:1px solid rgba(31,41,55,.75);
+      background:rgba(11,15,24,.25);
+      box-shadow:var(--shadow2);
+      margin-bottom:10px;
+    }
+    .level-row:last-child{margin-bottom:0}
+    .level-left .t{font-weight:900}
+    .pct{
+      font-weight:900;font-size:16px;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(124,58,237,.35);
+      background:rgba(124,58,237,.12);
+      white-space:nowrap;
+    }
+
+    /* Explanation blocks */
+    .explain{
+      padding:14px;
+      border-top:1px solid rgba(31,41,55,.55);
+      display:grid;gap:10px;
+    }
+    .explain h3{margin:0;font-size:14px;font-weight:900;letter-spacing:-.01em}
+    .explain p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.7}
+    .explain-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    @media(max-width:980px){ .explain-grid{grid-template-columns:1fr} }
+    .mini{
+      border:1px solid rgba(31,41,55,.75);
+      background:rgba(11,15,24,.22);
+      border-radius:16px;
+      padding:12px;
+      box-shadow:var(--shadow2);
+    }
+    .mini .k{font-size:12px;font-weight:800;color:rgba(229,231,235,.85)}
+    .mini .d{margin-top:6px;color:var(--muted);font-size:12.5px;line-height:1.6}
+
+    /* Bonus */
+    .bonus{
+      margin:12px 14px 16px;
+      padding:14px;border-radius:16px;
+      border:1px solid rgba(34,197,94,.30);
+      background:rgba(11,15,24,.26);
+    }
+    .bonus .big{margin:0;font-weight:900;font-size:16px;line-height:1.45}
+    .bonus .small{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.6}
+
+    /* Footer */
+    .footer{
+      margin-top:54px;
+      border-top:1px solid rgba(31,41,55,.65);
+      padding-top:22px;
+      color:var(--muted);
+      font-size:13px;
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    }
+    .footer a:hover{color:rgba(229,231,235,.95)}
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">EverSky</div>
+      <div class="nav">
+        <a class="btn btn-secondary"
+   href="https://eversky.fi/"
+   target="_blank"
+   rel="noopener noreferrer">
+  Home
+</a>
+        <a class="btn btn-secondary"
+   href="https://bscscan.com/"
+   target="_blank"
+   rel="noopener noreferrer">
+  Explorer
+</a>
+        <a class="btn btn-primary"
+   href="https://app.eversky.fi/"
+   target="_blank"
+   rel="noopener noreferrer">
+  App
+</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <section class="hero" id="home">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker"><span class="dot"></span>Referral Program</div>
+
+          <div class="h1">Passive income<br>through your network.</div>
+
+          <p class="sub">
+            Refer EverSky and earn rewards automatically whenever your network mints.
+            With up to <b>7 levels</b>, you don’t just earn from direct invites — you also benefit from activity deeper in your structure,
+            without having to follow up.
+          </p>
+
+          <div class="cta">
+            <a class="btn btn-primary"
+   href="https://app.eversky.fi/"
+   target="_blank"
+   rel="noopener noreferrer">
+  App
+</a>
+            <a class="btn" href="#requirements">Requirements</a>
+            <a class="btn" href="#bonus">New user bonus</a>
+          </div>
+
+          <div class="pill-row">
+            <div class="pill"><span></span>Up to 7 levels</div>
+            <div class="pill"><span></span>Up to 10% total reward</div>
+          </div>
+        </div>
+
+        <div class="panels">
+          <!-- LEFT: Rewards -->
+          <aside class="glass" aria-label="Referral Rewards Panel">
+            <div class="panel-title">
+              <div class="label">Effective rewards</div>
+             
+            </div>
+
+            <div class="levels" id="levels">
+              <div class="level-row"><div class="level-left"><div class="t">Level 1</div></div><div class="pct">5.0%</div></div>
+              <div class="level-row"><div class="level-left"><div class="t">Level 2</div></div><div class="pct">2.0%</div></div>
+              <div class="level-row"><div class="level-left"><div class="t">Level 3</div></div><div class="pct">1.0%</div></div>
+              <div class="level-row"><div class="level-left"><div class="t">Level 4</div></div><div class="pct">0.8%</div></div>
+              <div class="level-row"><div class="level-left"><div class="t">Level 5</div></div><div class="pct">0.6%</div></div>
+              <div class="level-row"><div class="level-left"><div class="t">Level 6</div></div><div class="pct">0.3%</div></div>
+              <div class="level-row" style="margin-bottom:0"><div class="level-left"><div class="t">Level 7</div></div><div class="pct">0.3%</div></div>
+            </div>
+
+            <div class="explain">
+              <h3>Why “passive income”?</h3>
+              <p>
+                Because you don’t only earn from direct invites. As your network grows, you can earn when people in deeper levels mint —
+                automatically, without selling or chasing.
+              </p>
+
+              <div class="explain-grid">
+                <div class="mini">
+                  <div class="k">Up to 7 levels</div>
+                  <div class="d">Earn on Level 1 and additionally on Levels 2–7 whenever your network is active.</div>
+                </div>
+                <div class="mini">
+                  <div class="k">Up to 10% total reward</div>
+                  <div class="d">Rewards are clearly defined and distributed across up to 7 levels.</div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- RIGHT: Requirements + Bonus -->
+          <aside class="glass" aria-label="Referral Rules Panel">
+            <div class="panel-title">
+              <div class="label">Requirements</div>
+              
+            </div>
+
+            <div class="explain" id="requirements" style="border-top:none">
+              <h3>Eligibility</h3>
+              <p>
+                For both the <b>referrer</b> and the <b>invited user</b> to earn, two conditions must be met:
+              </p>
+
+              <p style="margin-top:10px">
+                <b>1) Referrer</b><br>
+                The referrer must hold at least <b>30 EVER tokens</b> to be eligible for referral rewards.
+              </p>
+
+              <p style="margin-top:10px">
+                <b>2) Invited user</b><br>
+                During <b>minting</b>, the invited user must enter the <b>referrer’s address</b>. The referral is set on the first mint.
+              </p>
+
+              <p style="margin-top:10px">
+                If both requirements are met, <b>rewards and the bonus are credited automatically</b>.
+              </p>
+            </div>
+
+            <div class="panel-title" id="bonus">
+              <div class="label">Bonus</div>
+             
+            </div>
+
+            <div class="bonus">
+              <p class="big">New user bonus: <span style="color:rgba(34,197,94,.95)">+5%</span></p>
+              <p class="small">Anyone who joins using a referral link receives an additional 5% entry bonus.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>© EverSky 2026</div>
+      <div>
+        <a href="#home">Top</a> ·
+        <a href="#levels">Rewards</a> ·
+        <a href="#requirements">Requirements</a> ·
+        <a href="#bonus">Bonus</a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
